@@ -1,0 +1,51 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
+
+entity image_top_tb is
+end image_top_tb;
+
+architecture tb of image_top_tb is
+
+    -- Clock signal: 125 MHz clock (8 ns period)
+    signal clk    : std_logic := '0';
+    
+    -- DUT output signals
+    signal vga_r  : std_logic_vector(4 downto 0);
+    signal vga_g  : std_logic_vector(5 downto 0);
+    signal vga_b  : std_logic_vector(4 downto 0);
+    signal vga_hs : std_logic;
+    signal vga_vs : std_logic;
+
+begin
+
+    -- UUT instantiation
+    uut: entity work.image_top 
+        port map (
+            clk    => clk,
+            vga_r  => vga_r,
+            vga_g  => vga_g,
+            vga_b  => vga_b,
+            vga_hs => vga_hs,
+            vga_vs => vga_vs
+        );
+
+    -- Clock generation process - infinite toggle for a 125 MHz clock
+    clk_process: process
+    begin
+        loop
+            clk <= '0';
+            wait for 4 ns;
+            clk <= '1';
+            wait for 4 ns;
+        end loop;
+    end process;
+
+    -- Stop simulation after 5 ms
+    end_sim: process
+    begin
+        wait for 5 ms;
+        report "Done." severity failure;
+    end process;
+
+end tb;
